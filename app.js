@@ -27,6 +27,31 @@ async function main () {
                 email: data.email
             })
 
+            const gen = await randomNumber.generator({
+                min:  100000, 
+                max:  999999, 
+                integer: true
+            })
+            
+            let testAccount = await nodemailer.createTestAccount()
+            
+            const transport = await nodemailer.createTransport({
+                host: testAccount.smtp.host,
+                port: testAccount.smtp.port,
+                secure: testAccount.smtp.secure,
+                auth: {
+                    user: testAccount.user,
+                    pass: testAccount.pass,
+                }
+            })
+            
+            const info = await transport.sendMail({
+                from: `"Someone" ${testAccount.user}`,
+                to: `hadichanurmuhammad2006@gmail.com`,
+                subject: "Test uchun yuborildi",
+                text: `http://localhost:${gen}`
+            })
+
             await res.status(201).json({
                 ok: true,
                 message: "Successfully registrated",
@@ -55,33 +80,7 @@ async function main () {
                 }
             })
 
-
             if(!user) throw new Error('User not found')
-            
-            const gen = await randomNumber.generator({
-                min:  100000, 
-                max:  999999, 
-                integer: true
-            })
-            
-            let testAccount = await nodemailer.createTestAccount()
-            
-            const transport = await nodemailer.createTransport({
-                host: testAccount.smtp.host,
-                port: testAccount.smtp.port,
-                secure: testAccount.smtp.secure,
-                auth: {
-                    user: testAccount.user,
-                    pass: testAccount.pass,
-                }
-            })
-            
-            const info = await transport.sendMail({
-                from: `"Someone" ${testAccount.user}`,
-                to: `hadichanurmuhammad2006@gmail.com`,
-                subject: "Test uchun yuborildi",
-                text: `http://localhost:${gen}`
-            })
             
             await res.status(201).json({
                 ok: true,
